@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="popularFoodFragment(popularFoods)">
+    <section class="popular-section">
+        <div class="td col-sm-12">
+            <h2 class="td-dm-pho-bien">MÓN ĂN ĐƯỢC YÊU THÍCH</h2>
+            <div class="line"></div>
+        </div>
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <div th:each="food : ${popularFoods}" class="swiper-slide">
+                    <div class="store__card card">
+                        <div class="my-card-img">
+                            <img th:src="@{${food.imageUrl}}" class="card-img-top" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <div class="big-card-title">
+                                <h4 class="card-title" th:text="${food.name}"></h4>
+                                <h4 class="card-title" th:text="${(food.price)}"></h4>
+                            </div>
+                            <p class="card-text" th:text="${food.description}"></p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn-them" th:onclick="'addToCart(' + ${food.foodId} + ')'">Thêm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+        <script th:inline="javascript">
+            function addToCart(foodId) {
+                $.ajax({
+                    type: "POST",
+                    url: '/cart/add',
+                    data: { foodId: foodId },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": true,
+                                "positionClass": "toast-bottom-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showDuration": "300",
+                                "hideDuration": "1000",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "1000",
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut"
+                            };
+                            toastr.success("Món đã được thêm vào giỏ hàng!", "Thành công");
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Có lỗi xảy ra. Vui lòng thử lại.");
+                    }
+                });
+            }
+        </script>
+    </section>
+</div>
+</html>
